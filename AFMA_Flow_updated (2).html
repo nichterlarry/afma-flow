@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFMA — How It Works</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0f1f3d;
+    --blue: #1a4a8a;
+    --mid: #2563b0;
+    --sky: #3b82c4;
+    --gold: #c8973a;
+    --gold-light: #f0c96e;
+    --green: #1a7a4a;
+    --green-light: #22a862;
+    --red: #b03020;
+    --cream: #f7f4ef;
+    --light: #eef3f9;
+    --border: #d0dcea;
+    --text: #1a2a3a;
+    --muted: #5a6a7a;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .header h1 span { color: var(--gold); font-style: italic; }
+  .header p {
+    margin-top: 12px;
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .header-rule {
+    width: 80px; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    margin: 16px auto 0;
+    border-radius: 2px;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 32px;
+    background: white;
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .tab {
+    flex: 1;
+    padding: 10px 8px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .tab:hover { background: var(--light); color: var(--navy); }
+  .tab.active {
+    background: var(--navy);
+    color: white;
+    box-shadow: 0 2px 8px rgba(15,31,61,0.25);
+  }
+  .tab-num {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  /* PANELS */
+  .panel { display: none; animation: fadeUp 0.35s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PANEL 1: THE BIG PICTURE ── */
+  .big-picture {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .bp-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+  }
+
+  .bp-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .bp-box.navy { background: var(--navy); border-color: var(--navy); }
+  .bp-box.navy .bp-label { color: rgba(255,255,255,0.5); }
+  .bp-box.navy .bp-title { color: white; }
+  .bp-box.navy .bp-sub { color: rgba(255,255,255,0.7); }
+
+  .bp-box.gold-border { border-color: var(--gold); border-width: 2px; }
+  .bp-box.green-border { border-color: var(--green-light); border-width: 2px; }
+
+  .bp-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .bp-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .bp-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .bp-sub strong { color: var(--text); }
+
+  .bp-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 16px;
+    min-width: 80px;
+  }
+  .bp-arrow-line {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--border), var(--mid));
+    position: relative;
+  }
+  .bp-arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -1px; top: -4px;
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid var(--mid);
+  }
+  .bp-arrow-label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-align: center;
+    font-style: italic;
+  }
+
+  .bp-center-box {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    border-radius: 18px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(15,31,61,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .bp-center-box::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    background: rgba(200,151,58,0.15);
+    border-radius: 50%;
+  }
+  .bp-center-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 4px;
+  }
+  .bp-center-subtitle {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .bp-center-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+  .gold-pill {
+    display: inline-block;
+    background: var(--gold);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin: 3px;
+    letter-spacing: 0.04em;
+  }
+
+  .bp-down-arrow {
+    text-align: center;
+    color: var(--border);
+    font-size: 1.5rem;
+    margin: -4px 0;
+  }
+
+  /* ── PANEL 2: WHY THEY JOIN ── */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .why-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .why-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .why-card.rank1::before { background: var(--gold); }
+  .why-card.rank2::before { background: var(--mid); }
+  .why-card.rank3::before { background: var(--green-light); }
+  .why-card.rank4::before { background: var(--sky); }
+
+  .why-rank {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .rank1 .why-rank { color: var(--gold); }
+  .rank2 .why-rank { color: var(--mid); }
+  .rank3 .why-rank { color: var(--green); }
+  .rank4 .why-rank { color: var(--sky); }
+
+  .why-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .why-body { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .why-body strong { color: var(--text); }
+
+  .why-callout {
+    background: linear-gradient(135deg, #fff8e8, #fff3d0);
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .why-callout-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+  .why-callout-text { font-size: 0.9rem; color: var(--text); line-height: 1.65; }
+  .why-callout-text strong { color: var(--navy); display: block; margin-bottom: 4px; font-size: 1rem; }
+
+  /* ── PANEL 3: MONEY FLOW ── */
+  .money-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .money-source {
+    background: white;
+    border-radius: 12px;
+    padding: 18px 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .money-source .ms-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .money-source .ms-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .money-source .ms-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .money-source .ms-amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--green);
+  }
+  .money-source .ms-note { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+  .money-arrows {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 4px;
+  }
+  .money-arrow-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+  .money-arrow-down .mad-line {
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(180deg, var(--border), var(--mid));
+    position: relative;
+  }
+  .money-arrow-down .mad-line::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: -4px;
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid var(--mid);
+  }
+
+  .afma-center {
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    color: white;
+    margin-bottom: 4px;
+    box-shadow: 0 6px 24px rgba(15,31,61,0.2);
+  }
+  .afma-center h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+  .afma-center p { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+
+  .money-out-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .money-out {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .money-out .mo-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .money-out .mo-item {
+    font-size: 0.82rem;
+    color: var(--text);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--light);
+    display: flex;
+    justify-content: space-between;
+  }
+  .money-out .mo-item:last-child { border-bottom: none; }
+  .mo-cost { color: var(--red); font-weight: 500; }
+  .mo-earn { color: var(--green); font-weight: 500; }
+
+  /* ── PANEL 4: THE INSURANCE ENGINE ── */
+  .ins-intro {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .ins-intro h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .ins-intro p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+  .ins-intro p strong { color: var(--text); }
+
+  .ins-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .ins-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .ins-card h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--light);
+  }
+  .ins-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--light);
+  }
+  .ins-row:last-child { border-bottom: none; }
+  .ins-row .ir-label { color: var(--muted); }
+  .ins-row .ir-val-bad { color: var(--red); font-weight: 600; }
+  .ins-row .ir-val-good { color: var(--green); font-weight: 600; }
+
+  .olivarch-box {
+    background: linear-gradient(135deg, #fff8e8, #fff3d0);
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+    padding: 22px 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .olivarch-box .ob-icon { font-size: 2.5rem; flex-shrink: 0; }
+  .olivarch-box h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .olivarch-box p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .olivarch-box p strong { color: var(--text); }
+
+  /* ── PANEL 5: NEXT STEPS ── */
+  .steps-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 20px 22px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s;
+  }
+  .step-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .step-num {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  .step-num.s1 { background: var(--gold); }
+  .step-num.s2 { background: var(--mid); }
+  .step-num.s3 { background: var(--green); }
+  .step-num.s4 { background: var(--navy); }
+  .step-num.s5 { background: var(--sky); }
+
+  .step-content { flex: 1; }
+  .step-content h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .step-content p { font-size: 0.83rem; color: var(--muted); line-height: 1.55; }
+  .step-content p strong { color: var(--text); }
+  .step-owner {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--light);
+    color: var(--mid);
+    align-self: flex-start;
+    white-space: nowrap;
+  }
+
+  /* QUESTIONS BOX */
+  .q-box {
+    background: white;
+    border-left: 4px solid var(--gold);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .q-box h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .q-item {
+    font-size: 0.85rem;
+    color: var(--text);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--light);
+    display: flex;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .q-item:last-child { border-bottom: none; }
+  .q-mark { color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+  @media (max-width: 640px) {
+    .why-grid, .money-top, .ins-grid, .money-out-grid { grid-template-columns: 1fr; }
+    .bp-row { grid-template-columns: 1fr; }
+    .bp-arrow { display: none; }
+    .header h1 { font-size: 2.2rem; }
+    .tabs { flex-wrap: wrap; }
+    .tab { min-width: calc(33% - 4px); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>AFMA — <span>How It Works</span></h1>
+    <p>The Complete Business Model · Start to Finish</p>
+    <div class="header-rule"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel(0)">
+      <span class="tab-num">①</span>Big Picture
+    </button>
+    <button class="tab" onclick="showPanel(1)">
+      <span class="tab-num">②</span>Why They Join
+    </button>
+    <button class="tab" onclick="showPanel(2)">
+      <span class="tab-num">③</span>Money Flow
+    </button>
+    <button class="tab" onclick="showPanel(3)">
+      <span class="tab-num">④</span>Insurance Engine
+    </button>
+    <button class="tab" onclick="showPanel(4)">
+      <span class="tab-num">⑤</span>Next Steps
+    </button>
+    <button class="tab" onclick="showPanel(5)">
+      <span class="tab-num">⑥</span>Open Questions
+    </button>
+  </div>
+
+  <!-- PANEL 1: BIG PICTURE -->
+  <div class="panel active" id="panel-0">
+    <div class="section-label">The 30-second version</div>
+    <div class="big-picture">
+
+      <div class="bp-row">
+        <div class="bp-box">
+          <div class="bp-label">The Market</div>
+          <div class="bp-title">~60,000 Aesthetic Medicine Businesses</div>
+          <div class="bp-sub">Medspas, injectors, aesthetic clinics. Each one is a <strong>small business owner</strong> — typically unable to access better, more affordable insurance or group purchasing. <strong>No leverage. No group power.</strong></div>
+        </div>
+        <div class="bp-arrow">
+          <div class="bp-arrow-line"></div>
+          <div class="bp-arrow-label">need something they can't get alone</div>
+        </div>
+        <div class="bp-box gold-border">
+          <div class="bp-label">The Problem</div>
+          <div class="bp-title">High Costs. High Risk. No Voice.</div>
+          <div class="bp-sub">Malpractice insurance is expensive. Health benefits are unaffordable at small-group rates. No industry standard. <strong>Regulators are circling.</strong></div>
+        </div>
+      </div>
+
+      <div class="bp-down-arrow">↓</div>
+
+      <div class="bp-center-box">
+        <div class="bp-center-title">AFMA</div>
+        <div class="bp-center-subtitle">Association for Modern Aesthetics</div>
+        <div class="bp-center-desc">Pools thousands of businesses together to unlock group purchasing power, proprietary insurance products, expert training, and a unified regulatory voice.</div>
+        <div style="margin-top:14px;">
+          <span class="gold-pill">Education</span>
+          <span class="gold-pill">Advocacy</span>
+          <span class="gold-pill">Member Benefits</span>
+        </div>
+      </div>
+
+      <div class="bp-down-arrow">↓</div>
+
+      <div class="bp-row">
+        <div class="bp-box green-border">
+          <div class="bp-label">What the Member Gets</div>
+          <div class="bp-title">Savings + Value They Couldn't Get Alone</div>
+          <div class="bp-sub">Group insurance rates, proprietary health benefits, CE training, regulatory protection, and vendor discounts — all for one annual membership fee.</div>
+        </div>
+        <div class="bp-arrow">
+          <div class="bp-arrow-line"></div>
+          <div class="bp-arrow-label">membership pays for itself</div>
+        </div>
+        <div class="bp-box navy">
+          <div class="bp-label">What AFMA Gets</div>
+          <div class="bp-title">Recurring Revenue From Multiple Streams</div>
+          <div class="bp-sub">Membership dues + insurance commissions + pharma sponsor fees + CE upsell. Grows as membership grows.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL 2: WHY THEY JOIN -->
+  <div class="panel" id="panel-1">
+    <div class="section-label">The pitch — ranked by persuasiveness</div>
+    <div class="why-grid">
+      <div class="why-card rank1">
+        <div class="why-rank">🥇 #1 Reason — Training & CE</div>
+        <div class="why-title">Expert-Led Content Behind a Paywall</div>
+        <div class="why-body">Certifications, technique courses, and continuing education gated to members. Higher tiers unlock advanced content. This drives <strong>tier upgrades</strong> and justifies premium pricing. It's also what makes AFMA defensible vs. free online resources.</div>
+      </div>
+      <div class="why-card rank2">
+        <div class="why-rank">🥈 #2 Reason — Regulatory Cover</div>
+        <div class="why-title">A Seat at the Table Before Rules Are Imposed</div>
+        <div class="why-body">Aesthetics regulation is coming. Members who are part of AFMA help <strong>shape the rules</strong> rather than react to them. Less urgent for individual practitioners, highly compelling for <strong>MSOs and multi-site operators</strong> with most to lose.</div>
+      </div>
+      <div class="why-card rank3">
+        <div class="why-rank">🥉 #3 Reason — The Math</div>
+        <div class="why-title">Insurance Savings Exceed the Membership Fee</div>
+        <div class="why-body">A small business owner in aesthetic medicine pays retail rates for malpractice, health insurance, and liability. As an AFMA member in a group of thousands, they access <strong>large-group pricing</strong>. If the savings are $2,000/year and membership costs $600 — it's a no-brainer.</div>
+      </div>
+      <div class="why-card rank4">
+        <div class="why-rank">④ #4 Reason — Member Benefits</div>
+        <div class="why-title">A Curated Stack of Value They Can't Get Anywhere Else</div>
+        <div class="why-body">Beyond insurance, AFMA members access a curated portfolio of ancillary benefits — wellness programs, financial tools, practice management resources, and employee perks. These are bundled and negotiated at the association level, <strong>unavailable to non-members</strong> at any comparable price point.</div>
+      </div>
+    </div>
+    <div class="why-callout">
+      <div class="why-callout-icon">🔑</div>
+      <div class="why-callout-text">
+        <strong>The Stickiness Factor — Why They Renew</strong>
+        Once a member's insurance is running through AFMA, their staff health benefits are through CapCare, and their malpractice is at group rates — <strong>leaving costs them money.</strong> Canceling membership means losing all of it and going back to retail pricing. That's not a loyalty program. That's a switching cost. That's what drives renewal.
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: MONEY FLOW -->
+  <div class="panel" id="panel-2">
+    <div class="section-label">Every dollar in and out</div>
+    <div class="money-top">
+      <div class="money-source">
+        <div class="ms-icon">🏢</div>
+        <div class="ms-label">Revenue Stream 1</div>
+        <div class="ms-name">Membership Dues</div>
+        <div class="ms-amount">$495–$10,000/yr</div>
+        <div class="ms-note">Per member. Individual to Corporate tiers. Recurring annual fee.</div>
+      </div>
+      <div class="money-source">
+        <div class="ms-icon">🛡️</div>
+        <div class="ms-label">Revenue Stream 2</div>
+        <div class="ms-name">Insurance Commissions</div>
+        <div class="ms-amount">TBD per enrollment</div>
+        <div class="ms-note">AFMA earns a % from carriers each time a member enrolls. Member never sees this — it flows from the insurer.</div>
+      </div>
+      <div class="money-source">
+        <div class="ms-icon">💊</div>
+        <div class="ms-label">Revenue Stream 3</div>
+        <div class="ms-name">Pharma Sponsorships</div>
+        <div class="ms-amount">$50K–$200K/yr</div>
+        <div class="ms-note">Allergan, Galderma, Merz, Revance pay for preferred partner access to AFMA members.</div>
+      </div>
+    </div>
+
+    <div class="money-arrows">
+      <div class="money-arrow-down"><div class="mad-line"></div></div>
+      <div class="money-arrow-down"><div class="mad-line"></div></div>
+      <div class="money-arrow-down"><div class="mad-line"></div></div>
+    </div>
+
+    <div class="afma-center">
+      <h3>AFMA Treasury</h3>
+      <p>All revenue flows into the association before allocation to costs and partners</p>
+    </div>
+
+    <div class="money-arrows">
+      <div class="money-arrow-down"><div class="mad-line"></div></div>
+      <div class="money-arrow-down"><div class="mad-line"></div></div>
+    </div>
+
+    <div class="money-out-grid" style="grid-template-columns: 1fr;">
+      <div class="money-out">
+        <div class="mo-label">💸 Money Out — Fixed Costs</div>
+        <div class="mo-item"><span class="ir-label">ASI Management Fee</span><span class="mo-cost">$60K–$100K/yr</span></div>
+        <div class="mo-item"><span class="ir-label">Member Benefits</span><span class="mo-cost">TBD</span></div>
+        <div class="mo-item"><span class="ir-label">Technology / Platform</span><span class="mo-cost">TBD</span></div>
+        <div class="mo-item"><span class="ir-label">Government Relations</span><span class="mo-cost">TBD</span></div>
+        <div class="mo-item"><span class="ir-label">Marketing / Outreach</span><span class="mo-cost">TBD</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PANEL 4: THE INSURANCE ENGINE -->
+  <div class="panel" id="panel-3">
+    <div class="section-label">The primary revenue engine — and the #1 reason members join</div>
+
+    <div class="ins-intro">
+      <h3>Insurance Is the Engine. Everything Else Is the Platform.</h3>
+      <p>For many members, <strong>insurance is the reason they join</strong> — and it's the reason they stay. A small business owner in aesthetic medicine is a tiny, high-risk buyer to any carrier. They pay retail rates, have no leverage, and often can't access affordable coverage at all. When AFMA pools thousands of these businesses together, the association becomes a <strong>large group buyer</strong>. Carriers compete. Rates drop significantly. That savings gap — between what they pay today and what they pay as an AFMA member — is the core value proposition.</p>
+    </div>
+
+    <div class="olivarch-box" style="margin-bottom:20px;">
+      <div class="ob-icon">⚡</div>
+      <div>
+        <h4>The Critical Principle — All Insurance Revenue Flows Back to the Association</h4>
+        <p style="margin-bottom:8px;">Every insurance enrollment that happens through AFMA generates a commission that flows directly back into the association. This is not a side arrangement — it is <strong>the primary revenue mechanism</strong>. Members pay retail today. As AFMA members, they access group rates. AFMA earns a commission from the carrier on each enrollment. <strong>The member saves money. The association builds revenue. Both win.</strong></p>
+        <p>This is what makes insurance the engine rather than just a benefit. It doesn't just attract members — it <strong>funds the entire operation</strong> as membership grows.</p>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:20px;">
+      <div class="ins-card" style="border-top: 3px solid var(--gold);">
+        <h4 style="color:var(--navy); font-size:0.95rem;">🛡️ What Members Get</h4>
+        <div class="ins-row"><span class="ir-label">Malpractice / Prof. Liability</span><span class="ir-val-good">Group rate — significant savings</span></div>
+        <div class="ins-row"><span class="ir-label">General Liability</span><span class="ir-val-good">Group purchasing leverage</span></div>
+        <div class="ins-row"><span class="ir-label">Staff Health (CapCare)</span><span class="ir-val-good">Large-group access via CapCare</span></div>
+        <div class="ins-row"><span class="ir-label">Workers Comp</span><span class="ir-val-good">Group rate, state leverage</span></div>
+        <div class="ins-row"><span class="ir-label">Life / Disability</span><span class="ir-val-good">Group rates via AFMA partnership</span></div>
+      </div>
+    </div>
+
+    <div class="olivarch-box">
+      <div class="ob-icon">🔵</div>
+      <div>
+        <h4>Olivarch — Purpose-Built Coverage for Aesthetic Medicine</h4>
+        <p style="margin-bottom:8px;">Olivarch is an insurance product built specifically for the risk profile of aesthetic medicine — something generic carriers don't fully understand or price correctly. AFMA is the <strong>distribution channel</strong> that puts Olivarch in front of thousands of clinics who already trust the association.</p>
+        <p style="margin-bottom:8px;"><strong>Membership in AFMA and enrollment in Olivarch are separate decisions</strong> — neither requires the other. A member can join AFMA without Olivarch. A practitioner may access Olivarch independently. But for members who do enroll, AFMA earns a commission, and the member gets purpose-built coverage they can't find anywhere else.</p>
+        <p>AFMA creates the relationship and the trust. Olivarch creates the product. <strong>This is the connection between the two entities.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 5: NEXT STEPS -->
+  <div class="panel" id="panel-4">
+    <div class="section-label">What needs to happen next</div>
+
+    <div class="step-card" style="margin-bottom:14px;">
+      <div class="step-num s1">1</div>
+      <div class="step-content">
+        <h4>Determine Subscription Costs & Sponsorships</h4>
+        <p>The first priority is establishing what revenue can realistically be generated. This means finalizing <strong>membership subscription pricing across tiers</strong> and confirming <strong>sponsorship commitments</strong> from pharma and vendor partners. Until these numbers are set, the financial model cannot be built — and no downstream decisions (benefit budgets, staffing, marketing spend) can be made with confidence.</p>
+      </div>
+      <div class="step-owner">Full Group</div>
+    </div>
+
+    <div class="step-card" style="margin-bottom:14px;">
+      <div class="step-num s2">2</div>
+      <div class="step-content">
+        <h4>Curate Training Materials + Benefit Bundles</h4>
+        <p>Running concurrently: <strong>curate the training materials and regularly scheduled educational content</strong> that will anchor the member experience and drive tier upgrades. At the same time, <strong>Larry and Beth will develop and deliver the member benefit bundles</strong> — the curated portfolio of ancillary value-adds that increase loyalty and make membership sticky. Both workstreams move in parallel once revenue parameters are established.</p>
+      </div>
+      <div class="step-owner">Larry + Beth / Content Team</div>
+    </div>
+
+    <div class="step-card" style="margin-bottom:14px;">
+      <div class="step-num s3">3</div>
+      <div class="step-content">
+        <h4>Stand Up the Regulatory & Lobbying Arm</h4>
+        <p>Aesthetics regulation is coming — and AFMA's ability to <strong>shape policy rather than react to it</strong> is a core part of the value proposition, particularly for MSOs and multi-site operators. This means identifying and engaging government relations resources, defining the legislative priorities, and establishing AFMA's voice at the state and federal level. The regulatory arm is also a <strong>major credibility signal</strong> that elevates the association above a simple benefits platform.</p>
+      </div>
+      <div class="step-owner">Leadership / Gov. Relations</div>
+    </div>
+
+  </div>
+
+  <!-- PANEL 6: OPEN QUESTIONS -->
+  <div class="panel" id="panel-5">
+    <div class="section-label">Questions that need answers to move forward</div>
+
+    <div class="q-box" style="margin-bottom:14px;">
+      <h4>💰 Financial Model</h4>
+      <div class="q-item"><span class="q-mark">?</span><strong>Year 1 Member Goal:</strong> What is the realistic target — and what is the aspirational target? These need to be two separate numbers going into the financial model.</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Year 2 Member Goal:</strong> What growth rate is the model built on — and what marketing spend is required to hit it?</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Benefit Budget per Member:</strong> How much is AFMA allocating per member per year (or per month) to fund the member benefit stack? This number drives everything — what benefits are possible, what tier they land in, and what the net margin looks like.</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Total Capital Committed:</strong> What is the partner capital pool, and what is the burn runway before membership revenue covers operating costs?</div>
+    </div>
+
+    <div class="q-box" style="margin-bottom:14px;">
+      <h4>🛡️ Insurance & Revenue</h4>
+      <div class="q-item"><span class="q-mark">?</span><strong>Commission Structure:</strong> What is the confirmed commission rate AFMA earns per insurance enrollment across each product line (malpractice, general liability, CapCare, workers comp, Olivarch)?</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Olivarch Enrollment Model:</strong> Will Olivarch be available exclusively to AFMA members, or available to non-members as well? This affects both positioning and revenue projection.</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Carrier Relationships:</strong> Which carriers are confirmed vs. in negotiation? What is the timeline to having group rates available at launch?</div>
+    </div>
+
+    <div class="q-box" style="margin-bottom:14px;">
+      <h4>⚖️ Regulatory & Lobbying</h4>
+      <div class="q-item"><span class="q-mark">?</span><strong>Gov. Relations Resource:</strong> Who is AFMA engaging to lead the lobbying and regulatory arm — internal hire, outside firm, or existing partner?</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Priority States:</strong> Which states are highest priority for regulatory engagement given current legislative activity around aesthetic medicine?</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Federal vs. State Strategy:</strong> Is the initial focus state-level licensing/scope-of-practice battles, or is there a federal angle (FTC, CMS) that needs early attention?</div>
+    </div>
+
+    <div class="q-box">
+      <h4>🏗️ Operations & Launch</h4>
+      <div class="q-item"><span class="q-mark">?</span><strong>Launch Timeline:</strong> What is the target date for the first membership enrollment — and what is the minimum viable product needed to open enrollment?</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>ASI Management Scope:</strong> What exactly is covered under the ASI management fee — and what falls outside it?</div>
+      <div class="q-item"><span class="q-mark">?</span><strong>Founding Member Strategy:</strong> Is there a plan for a founding member cohort with special pricing or recognition to build early momentum and social proof?</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showPanel(idx) {
+  document.querySelectorAll('.panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+}
+</script>
+</body>
+</html>
